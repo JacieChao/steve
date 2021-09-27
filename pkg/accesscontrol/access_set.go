@@ -41,6 +41,14 @@ func (a *AccessSet) Namespaces() (result []string) {
 	return
 }
 
+func (a *AccessSet) Cache() []map[Access]bool{
+	result := []map[Access]bool{}
+	for _, value := range a.set {
+		result = append(result, value)
+	}
+	return result
+}
+
 func (a *AccessSet) Merge(right *AccessSet) {
 	for k, accessMap := range right.set {
 		m, ok := a.set[k]
