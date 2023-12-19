@@ -13,6 +13,7 @@ import (
 	"github.com/rancher/steve/pkg/stores/proxy"
 	"github.com/rancher/wrangler/pkg/apply"
 	"github.com/rancher/wrangler/pkg/yaml"
+	"github.com/sirupsen/logrus"
 	"k8s.io/apimachinery/pkg/api/meta"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -41,14 +42,17 @@ func (a *Apply) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		apiContext.WriteError(err)
 		return
 	}
+	logrus.Info("====== apply create apply =========")
 
 	apply, err := a.createApply(apiContext)
+	logrus.Info("====== err %v, apply %v", err, apply)
 	if err != nil {
 		apiContext.WriteError(err)
 		return
 	}
 
 	if err := apply.WithDefaultNamespace(input.DefaultNamespace).ApplyObjects(objs...); err != nil {
+		logrus.Infof("======= apply error %v", err)
 		apiContext.WriteError(err)
 		return
 	}
